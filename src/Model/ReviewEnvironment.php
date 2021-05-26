@@ -17,7 +17,7 @@ class ReviewEnvironment
 
     public function __construct(string $name, ?string $owner = null)
     {
-        $this->name = $name;
+        $this->name  = $name;
         $this->owner = $owner;
     }
 
@@ -42,11 +42,11 @@ class ReviewEnvironment
     {
         return $this->owner;
     }
-    
+
     public function getPullRequestTitle(): string
     {
         if (null === $this->pullRequestTitle) {
-            $explodeTitle = preg_split('/\[?ta-[0-9]{1,9}(\]|( ?(:|\|)))? ?/i', $this->jirHubTask->getGithubPullRequest()->getTitle());
+            $explodeTitle           = preg_split('/\[?ta-[0-9]{1,9}(\]|( ?(:|\|)))? ?/i', $this->jirHubTask->getGithubPullRequest()->getTitle());
             $this->pullRequestTitle = trim(array_pop($explodeTitle));
         }
 
