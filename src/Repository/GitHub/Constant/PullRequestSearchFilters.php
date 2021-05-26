@@ -8,6 +8,7 @@ class PullRequestSearchFilters
     const STATE            = 'state';
     const LABELS           = 'labels';
     const TITLE            = 'title';
-    const HEAD_REF         = 'head_ref';
-    const BASE_REF         = 'base_ref';
+    const HEAD             = 'head';
+    const BASE             = 'base';
+    const NO_CACHE         = 'no_cache';
 }

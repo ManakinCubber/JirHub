@@ -75,12 +75,14 @@ class PullRequestRepository
         if (
             false === \array_key_exists(PullRequestSearchFilters::RESULTS_PER_PAGE, $parameters)
             && false === \array_key_exists(PullRequestSearchFilters::STATE, $parameters)
+            && false === \array_key_exists(PullRequestSearchFilters::BASE, $parameters)
+            && false === \array_key_exists(PullRequestSearchFilters::HEAD, $parameters)
+            && false === ($parameters[PullRequestSearchFilters::NO_CACHE] ?? false)
         ) {
             $cacheDefaultList = true;
         }
 
         $apiParameters = [
-            PullRequestSearchFilters::STATE            => 'open',
             PullRequestSearchFilters::RESULTS_PER_PAGE => 50,
         ];
 
@@ -92,6 +94,16 @@ class PullRequestRepository
         if (\array_key_exists(PullRequestSearchFilters::STATE, $parameters)) {
             $apiParameters[PullRequestSearchFilters::STATE] = $parameters[PullRequestSearchFilters::STATE];
             unset($parameters[PullRequestSearchFilters::STATE]);
+        }
+
+        if (\array_key_exists(PullRequestSearchFilters::HEAD, $parameters)) {
+            $apiParameters[PullRequestSearchFilters::HEAD] = $this->repositoryOwner . ':' . $parameters[PullRequestSearchFilters::HEAD];
+            unset($parameters[PullRequestSearchFilters::HEAD]);
+        }
+
+        if (\array_key_exists(PullRequestSearchFilters::BASE, $parameters)) {
+            $apiParameters[PullRequestSearchFilters::BASE] = $parameters[PullRequestSearchFilters::BASE];
+            unset($parameters[PullRequestSearchFilters::BASE]);
         }
 
         if (true === $cacheDefaultList) {
@@ -133,22 +145,6 @@ class PullRequestRepository
 
             if (\array_key_exists(PullRequestSearchFilters::LABELS, $parameters)
                 && false === empty(array_diff($parameters[PullRequestSearchFilters::LABELS], $pullRequest->getLabels()))
-            ) {
-                unset($pullRequests[$key]);
-
-                continue;
-            }
-
-            if (\array_key_exists(PullRequestSearchFilters::HEAD_REF, $parameters)
-                && false === strpos($pullRequest->getHeadRef(), $parameters[PullRequestSearchFilters::HEAD_REF])
-            ) {
-                unset($pullRequests[$key]);
-
-                continue;
-            }
-
-            if (\array_key_exists(PullRequestSearchFilters::BASE_REF, $parameters)
-                && false === strpos($pullRequest->getBaseRef(), $parameters[PullRequestSearchFilters::BASE_REF])
             ) {
                 unset($pullRequests[$key]);
 

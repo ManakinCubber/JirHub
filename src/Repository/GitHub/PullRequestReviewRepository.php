@@ -36,11 +36,12 @@ class PullRequestReviewRepository
     {
         $reviews       = [];
         $apiParameters = [
-            'per_page' => 50,
+            'page'     => 1,
+            'per_page' => 100,
         ];
 
-        if (\array_key_exists('per_page', $parameters)) {
-            $apiParameters['per_page'] = $parameters['per_page'];
+        if (\array_key_exists('page', $parameters)) {
+            $apiParameters['page'] = $parameters['page'];
         }
 
         $reviewsData = $this->client->reviews()->all(
@@ -52,6 +53,15 @@ class PullRequestReviewRepository
 
         foreach ($reviewsData as $reviewData) {
             $reviews[] = $this->pullRequestReviewFactory->create($reviewData);
+        }
+
+        if ($apiParameters['per_page'] === \count($reviewsData)) {
+            ++$apiParameters['page'];
+
+            return array_merge($reviews, $this->search(
+                $pullRequest,
+                $apiParameters
+            ));
         }
 
         return $reviews;

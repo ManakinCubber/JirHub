@@ -39,7 +39,7 @@ final class DeleteValidationRequiredLabelCommand implements SynchronizationComma
 
         if ($pullRequest->hasLabel($this->label)
             && (
-                !$this->githubHandler->isPullRequestApproved($pullRequest)
+                false === $this->githubHandler->isPullRequestApproved($pullRequest)
                 || $this->githubHandler->isDeployed($pullRequest)
                 || $this->githubHandler->isValidated($pullRequest)
                 || $pullRequest->isInProgress()

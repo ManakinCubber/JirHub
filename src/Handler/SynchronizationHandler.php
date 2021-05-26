@@ -19,8 +19,6 @@ use Psr\Cache\InvalidArgumentException;
 
 class SynchronizationHandler
 {
-    const RELEASE_PR_TITLE_PREFIX = 'MEP';
-
     /** @var CacheItemPoolInterface */
     private $cache;
 
@@ -81,7 +79,7 @@ class SynchronizationHandler
         $this->cache->deleteItem(DashboardHandler::CACHE_KEY);
         $this->cache->deleteItem(PullRequestRepository::DEFAULT_LIST);
 
-        if (0 === strpos($pullRequest->getTitle(), self::RELEASE_PR_TITLE_PREFIX)) {
+        if ('master' === $pullRequest->getBaseRef() && 'dev' === $pullRequest->getHeadRef()) {
             return;
         }
 
